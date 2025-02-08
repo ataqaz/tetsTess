@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tesseract.js Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.4/dist/tesseract.min.js"></script>
+</head>
+<body>
+  <h1>Tesseract.js Example</h1>
+  <input type="file" id="imageInput" accept="image/*">
+  <p id="status">Выберите изображение...</p>
+  <pre id="output"></pre>
+
+  <script>
+    document.getElementById('imageInput').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const status = document.getElementById('status');
+        const output = document.getElementById('output');
+
+        status.textContent = 'Обработка изображения...';
+
+        Tesseract.recognize(
+          file,
+          'rus+eng', // Языки для распознавания (русский и английский)
+          {
+            logger: m => status.textContent = `Статус: ${m.status}`,
+          }
+        ).then(({ data: { text } }) => {
+          output.textContent = text;
+          status.textContent = 'Готово!';
+        }).catch(err => {
+          status.textContent = 'Ошибка: ' + err.message;
+        });
+      }
+    });
+  </script>
+</body>
+</html>
